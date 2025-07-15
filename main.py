@@ -9,6 +9,13 @@ class QueryRequest(BaseModel):
     apiKey: str
     endpoint: str
     projectName: str | None = "default"
+    
+class AnnotationPayload(BaseModel):
+    span_id: str
+    name: str  # annotation name like "correctness"
+    result: Dict[str, Any]  # { "label": str, "score": float, "explanation": Optional[str] }
+    identifier: Optional[str] = None  # optional unique identifier 
+    
 
 app = FastAPI()
 
@@ -56,5 +63,21 @@ async def fetch_spans(req: QueryRequest):
     ]
     print(traces)
     
-
     return {"traces": traces}
+    
+@app.post("/annotate-span", response_model=Any)
+async def annotate_span(payload: AnnotationPayload, req: QueryRequest):
+    os.environ["PHOENIX_API_KEY"] = req.apiKey
+    os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = YOUR_ENDPOINT
+
+    client = px.Client()
+    ann = client.annotations.add_span_annotation(
+        annotation_name=payload.name,
+        annotator_kind= "HUMAN",
+        span_id=payload.span_id,
+        label=payload.result.get("label"),
+        score=payload.result.get("score"),
+        explanation=payload.result.get("explanation"),
+        metadata={},
+        identifier=payload.identifier, 
+    )
