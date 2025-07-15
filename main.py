@@ -1,6 +1,7 @@
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from collections import defaultdict
 from pydantic import BaseModel
 import phoenix as px
 
@@ -42,5 +43,18 @@ async def fetch_spans(req: QueryRequest):
         return {"spans": []}
     print(df)
 
-    spans = df.to_dict(orient="records")
-    return {"spans": spans}
+    records = df.to_dict(orient="records")
+
+    grouped = defaultdict(list)
+    for rec in records:
+        trace_id = rec.get("context.trace_id")
+        grouped[trace_id].append(rec)
+
+    traces = [
+        {"trace_id": trace_id, "spans": spans}
+        for trace_id, spans in grouped.items()
+    ]
+    print(traces)
+    
+
+    return {"traces": traces}
