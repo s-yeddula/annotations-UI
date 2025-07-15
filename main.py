@@ -40,6 +40,7 @@ async def fetch_spans(req: QueryRequest):
 
     if df is None:
         return {"spans": []}
+    print(df)
 
-    spans = df.reset_index().to_dict(orient="records")
+    spans = df.to_dict(orient="records")
     return {"spans": spans}
