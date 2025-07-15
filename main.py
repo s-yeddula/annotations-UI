@@ -69,7 +69,7 @@ async def fetch_spans(req: QueryRequest):
 @app.post("/annotate-span", response_model=Any)
 async def annotate_span(payload: AnnotationPayload, req: QueryRequest):
     os.environ["PHOENIX_API_KEY"] = req.apiKey
-    os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = YOUR_ENDPOINT
+    os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = req.endpoint.rstrip("/")
 
     client = px.Client()
     ann = client.annotations.add_span_annotation(
