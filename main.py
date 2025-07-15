@@ -12,6 +12,7 @@ app = FastAPI()
 
 @app.on_event("startup")
 def setup_defaults():
+    pass
     # no-op, environment is set dynamically per-request
 
 @app.post("/fetch-spans")
