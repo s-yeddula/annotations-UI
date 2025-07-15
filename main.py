@@ -70,8 +70,9 @@ async def fetch_spans(req: QueryRequest):
 async def annotate_span(payload: AnnotationPayload, req: QueryRequest):
     os.environ["PHOENIX_API_KEY"] = req.apiKey
     os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = req.endpoint.rstrip("/")
+    from phoenix.client import Client
 
-    client = px.Client()
+    client = Client()
     ann = client.annotations.add_span_annotation(
         annotation_name=payload.name,
         annotator_kind= "HUMAN",
