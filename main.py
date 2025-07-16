@@ -54,18 +54,14 @@ async def fetch_spans(req: QueryRequest):
         
    
     def replace_missing_with_zero_robust(x):
-    if isinstance(x, (list, np.ndarray)):
-        return 0 if len(x) == 0 else x
-    elif pd.isna(x):
-        return 0
-    else:
-        return x
+        if isinstance(x, (list, np.ndarray)):
+            return 0 if len(x) == 0 else x
+        elif pd.isna(x):
+            return 0
+        else:
+            return x
 
     df = df.apply(lambda col: col.map(replace_missing_with_zero_robust))
-
-    print("SPANS BELOW:")
-    print(df)
-
     
     records = df.to_dict(orient="records")
 
@@ -78,17 +74,19 @@ async def fetch_spans(req: QueryRequest):
         {"trace_id": trace_id, "spans": spans}
         for trace_id, spans in grouped.items()
     ]
-    print("MADE IT HERE")
-    return_val = {"traces": traces}
-    try:
-        json.dumps(return_val)
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        print("❌ Your return value is not JSON serializable. Inspect below:")
-        import pprint
-        pprint.pprint(return_val)
-        raise
+
+    return {"traces": traces}
+    # print("MADE IT HERE")
+    # return_val = {"traces": traces}
+    # try:
+    #     json.dumps(return_val)
+    # except Exception as e:
+    #     import traceback
+    #     traceback.print_exc()
+    #     print("❌ Your return value is not JSON serializable. Inspect below:")
+    #     import pprint
+    #     pprint.pprint(return_val)
+    #     raise
     
 @app.post("/annotate-span", response_model=Any)
 async def annotate_span(payload: AnnotationPayload, req: QueryRequest):
