@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from collections import defaultdict
 from typing import Any, Dict, Optional
 from pydantic import BaseModel
+import pandas as pd
 import phoenix as px
 
 class QueryRequest(BaseModel):
