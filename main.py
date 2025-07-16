@@ -53,7 +53,7 @@ async def fetch_spans(req: QueryRequest):
         return {"spans": []}
         
     print("SPANS BELOW:")
-    print(traces)
+    print(df)
    
     def clean_cell(x):
         if isinstance(x, (list, np.ndarray)):
