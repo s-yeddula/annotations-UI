@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Any, Dict, Optional
 from pydantic import BaseModel
 import pandas as pd
+import numpy as np
 import phoenix as px
 
 class QueryRequest(BaseModel):
@@ -51,7 +52,7 @@ async def fetch_spans(req: QueryRequest):
     if df is None:
         return {"spans": []}
    
-    df = df.applymap(lambda x: None if pd.isna(x) else x)
+    df = df.applymap(lambda x: None if (isinstance(x, (list, np.ndarray)) and len(x) == 0) or pd.isna(x) else x)
     print("NUMBER OF NULL VALUES:")
     print(df.isnull().sum())
     
