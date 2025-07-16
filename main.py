@@ -52,7 +52,8 @@ async def fetch_spans(req: QueryRequest):
     if df is None:
         return {"spans": []}
    
-    df = df.applymap(lambda x: None if (isinstance(x, (list, np.ndarray)) and len(x) == 0) or pd.isna(x) else x)
+    df = df.applymap(lambda x: None if (isinstance(x, (list, np.ndarray)) and (len(x) == 0 or all(pd.isna(val) for val in x)))
+                             else (None if pd.isna(x) else x))
     print("NUMBER OF NULL VALUES:")
     print(df.isnull().sum())
     
