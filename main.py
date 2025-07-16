@@ -33,7 +33,6 @@ app.add_middleware(
 @app.on_event("startup")
 def setup_defaults():
     pass
-    # no-op, environment is set dynamically per-request
 
 @app.get("/health")
 async def health_check():
@@ -76,17 +75,7 @@ async def fetch_spans(req: QueryRequest):
     ]
 
     return {"traces": traces}
-    # print("MADE IT HERE")
-    # return_val = {"traces": traces}
-    # try:
-    #     json.dumps(return_val)
-    # except Exception as e:
-    #     import traceback
-    #     traceback.print_exc()
-    #     print("❌ Your return value is not JSON serializable. Inspect below:")
-    #     import pprint
-    #     pprint.pprint(return_val)
-    #     raise
+    
     
 @app.post("/annotate-span", response_model=Any)
 async def annotate_span(payload: AnnotationPayload, req: QueryRequest):
