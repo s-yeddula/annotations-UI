@@ -52,23 +52,20 @@ async def fetch_spans(req: QueryRequest):
     if df is None:
         return {"spans": []}
         
-    print("SPANS BELOW:")
-    print(df)
    
-    def clean_cell(x):
-        if isinstance(x, (list, np.ndarray)):
-            cleaned = [clean_cell(y) for y in x]
-            return None if all(y is None for y in cleaned) else cleaned
-        if isinstance(x, dict):
-            return {k: clean_cell(v) for k, v in x.items()}
-        if pd.isna(x):
-            return None
+    def replace_missing_with_zero_robust(x):
+    if isinstance(x, (list, np.ndarray)):
+        return 0 if len(x) == 0 else x
+    elif pd.isna(x):
+        return 0
+    else:
         return x
 
-    df = df.applymap(clean_cell)
+    df = df.apply(lambda col: col.map(replace_missing_with_zero_robust))
 
-    print("NUMBER OF NULL VALUES:")
-    print(df.isnull().sum())
+    print("SPANS BELOW:")
+    print(df)
+
     
     records = df.to_dict(orient="records")
 
