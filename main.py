@@ -51,6 +51,9 @@ async def fetch_spans(req: QueryRequest):
 
     if df is None:
         return {"spans": []}
+        
+    print("NUMBER OF NULL VALUES BEFORE:")
+    print(df.isnull().sum())
    
     def clean_cell(x):
         if isinstance(x, (list, np.ndarray)):
@@ -64,6 +67,7 @@ async def fetch_spans(req: QueryRequest):
         return x
 
     df = df.applymap(clean_cell)
+    df = df.where(pd.notnull(df), None)
 
     print("NUMBER OF NULL VALUES:")
     print(df.isnull().sum())
