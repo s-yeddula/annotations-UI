@@ -51,7 +51,8 @@ async def fetch_spans(req: QueryRequest):
     if df is None:
         return {"spans": []}
    
-    df = df.where(pd.notnull(df), None)
+    df = df.applymap(lambda x: None if pd.isna(x) else x)
+    
     records = df.to_dict(orient="records")
 
     grouped = defaultdict(list)
