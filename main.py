@@ -52,6 +52,8 @@ async def fetch_spans(req: QueryRequest):
         return {"spans": []}
    
     df = df.applymap(lambda x: None if pd.isna(x) else x)
+    print("NUMBER OF NULL VALUES:")
+    print(df.isnull().sum())
     
     records = df.to_dict(orient="records")
 
@@ -64,6 +66,7 @@ async def fetch_spans(req: QueryRequest):
         {"trace_id": trace_id, "spans": spans}
         for trace_id, spans in grouped.items()
     ]
+    print("TRACES BELOW:")
     print(traces)
     
     return {"traces": traces}
