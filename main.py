@@ -49,8 +49,8 @@ async def fetch_spans(req: QueryRequest):
 
     if df is None:
         return {"spans": []}
-    print(df)
-
+   
+    df = df.where(pd.notnull(df), None)
     records = df.to_dict(orient="records")
 
     grouped = defaultdict(list)
