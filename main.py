@@ -52,8 +52,8 @@ async def fetch_spans(req: QueryRequest):
     if df is None:
         return {"spans": []}
         
-    print("NUMBER OF NULL VALUES BEFORE:")
-    print(df.isnull().sum())
+    print("SPANS BELOW:")
+    print(traces)
    
     def clean_cell(x):
         if isinstance(x, (list, np.ndarray)):
@@ -83,8 +83,6 @@ async def fetch_spans(req: QueryRequest):
         {"trace_id": trace_id, "spans": spans}
         for trace_id, spans in grouped.items()
     ]
-    print("TRACES BELOW:")
-    print(traces)
     
     return {"traces": traces}
     
