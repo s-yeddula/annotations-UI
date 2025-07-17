@@ -18,8 +18,12 @@ class AnnotationPayload(BaseModel):
     name: str  # annotation name like "correctness"
     result: Dict[str, Any]  # { "label": str, "score": float, "explanation": Optional[str] }
     identifier: Optional[str] = None  # optional unique identifier 
-    
 
+class ExperimentRequest(BaseModel):
+    apiKey: str
+    endpoint: str
+    experimentId: str
+    
 app = FastAPI()
 
 app.add_middleware(
@@ -94,3 +98,24 @@ async def annotate_span(payload: AnnotationPayload, req: QueryRequest):
         metadata={},
         identifier=payload.identifier, 
     )
+
+@app.get("/experiment-runs-json")
+async def fetch_experiment_runs(req: ExperimentRequest):
+    # Validate input
+    if not req.experimentId:
+        raise HTTPException(status_code=400, detail="experimentId is required")
+
+    # Build URL
+    url = f"{req.endpoint.rstrip('/')}/v1/experiments/{req.experimentId}/json"
+    headers = {"Authorization": f"Bearer {req.apiKey}"}
+    print("Checkpoint #1")
+    try:
+        resp = requests.get(url, headers=headers)
+        print("Checkpoint #2")
+    except requests.RequestException as e:
+        raise HTTPException(status_code=502, detail=f"Request failed: {e}")
+
+    if resp.status_code != 200:
+        raise HTTPException(status_code=resp.status_code, detail=resp.text)
+    print("Checkpoint #3: resp")
+    return resp
