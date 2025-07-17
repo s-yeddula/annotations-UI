@@ -7,6 +7,7 @@ from pydantic import BaseModel
 import pandas as pd
 import numpy as np
 import phoenix as px
+import requests
 
 class QueryRequest(BaseModel):
     apiKey: str
