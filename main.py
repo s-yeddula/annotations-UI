@@ -99,7 +99,7 @@ async def annotate_span(payload: AnnotationPayload, req: QueryRequest):
         identifier=payload.identifier, 
     )
 
-@app.get("/experiment-runs-json")
+@app.post("/experiment-runs-json")
 async def fetch_experiment_runs(req: ExperimentRequest):
     # Validate input
     if not req.experimentId:
