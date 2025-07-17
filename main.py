@@ -109,14 +109,13 @@ async def fetch_experiment_runs(req: ExperimentRequest):
     # Build URL
     url = f"{req.endpoint.rstrip('/')}/v1/experiments/{req.experimentId}/json"
     headers = {"Authorization": f"Bearer {req.apiKey}"}
-    print("Checkpoint #1")
     try:
         resp = requests.get(url, headers=headers)
-        print("Checkpoint #2")
     except requests.RequestException as e:
         raise HTTPException(status_code=502, detail=f"Request failed: {e}")
 
     if resp.status_code != 200:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)
     print("Checkpoint #3: resp")
-    return resp
+    print(resp)
+    return resp.json()
